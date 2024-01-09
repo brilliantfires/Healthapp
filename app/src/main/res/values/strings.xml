@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Healthapp</string>
+    <string name="show_less">显示更少</string>
+    <string name="show_more">显示更多</string>
+    <string name="first_screen_test">首屏测试</string>
+    <string name="_continue">点击继续</string>
+    <string name="step_numbers">步数</string>
+    <string name="sleep_time">睡眠时间</string>
+    <string name="_distance">运动距离</string>
+    <string name="heart_rate">心率</string>
+    <string name="blood_pressure">血压</string>
+    <string name="body_weight">体重</string>
+    <string name="_calories">卡路里</string>
+    <string name="placeholder_search">搜索</string>
+    <string name="favorite_collections">收藏夹</string>
+    <string name="align_your_body">健身</string>
+    <string name="ab1_inversions">倒立</string>
+    <string name="ab2_quick_yoga">快速瑜伽</string>
+    <string name="ab3_stretching">伸展</string>
+    <string name="ab4_tabata">Tabata</string>
+    <string name="ab5_hiit">高强度间歇训练</string>
+    <string name="ab6_pre_natal_yoga">孕前瑜伽</string>
+    <string name="fc1_short_mantras">简短的咒语</string>
+    <string name="fc2_nature_meditations">自然冥想</string>
+    <string name="fc3_stress_and_anxiety">压力和焦虑</string>
+    <string name="fc4_self_massage">自我按摩</string>
+    <string name="fc5_overwhelmed">不知所措</string>
+    <string name="fc6_nightly_wind_down">夜间放松</string>
+    <string name="cd_fab_start">开始</string>
+    <string name="bottom_navigation_browse">浏览</string>
+    <string name="bottom_navigation_home">我的</string>
+    <string name="username_hint">用户名</string>
+    <string name="password_hint">密码</string>
+    <string name="confirm_password_hint">确认密码</string>
+    <string name="email_hint">邮箱</string>
+    <string name="register_button_text">注册</string>
+    <string name="login_button_text">登录</string>
+    <string name="send_verification_code_button_text">发送</string>
+    <string name="new_password_text">新密码</string>
+    <string name="confirm_new_password_text">确认新密码</string>
+    <string name="reset_password_text">重置密码</string>
+    <string name="bottom_summary_text">摘要</string>
+
+
+
+</resources>
