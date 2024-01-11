@@ -14,6 +14,9 @@ interface AdminDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(admin: Admin)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(admins: List<Admin>)
+
     @Update
     suspend fun updateAdmin(admin: Admin)
 

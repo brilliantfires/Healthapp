@@ -14,6 +14,9 @@ class HealthMetricRepository(private val healthMetricDao: HealthMetricDAO) {
         healthMetricDao.insert(healthMetric)
     }
 
+    suspend fun insertAllHealthMetrics(metrics: List<HealthMetric>) {
+        healthMetricDao.insertAll(metrics)
+    }
     suspend fun updateHealthMetric(healthMetric: HealthMetric) {
         healthMetricDao.updateHealthMetric(healthMetric)
     }

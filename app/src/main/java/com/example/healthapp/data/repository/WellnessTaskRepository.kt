@@ -20,5 +20,4 @@ class WellnessTaskRepository(private val wellnessTaskDAO: WellnessTaskDAO) {
     }
 
     fun getTaskById(taskId: Int): Flow<WellnessTask> = wellnessTaskDAO.getTaskById(taskId)
-
 }

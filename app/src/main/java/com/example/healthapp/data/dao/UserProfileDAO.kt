@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.Flow
 interface UserProfileDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(userProfile: UserProfile)
-
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(userProfiles: List<UserProfile>)
     @Update
     suspend fun updateUserProfile(userProfile: UserProfile)
 

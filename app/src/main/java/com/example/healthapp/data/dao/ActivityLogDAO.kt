@@ -14,6 +14,9 @@ interface ActivityLogDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(activityLog: ActivityLog)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(activityLogs:List<ActivityLog> )
+
     @Update
     suspend fun updateActivityLog(activityLog: ActivityLog)
 

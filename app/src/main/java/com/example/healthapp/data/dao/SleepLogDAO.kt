@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.healthapp.data.entity.HealthMetric
 import com.example.healthapp.data.entity.SleepLog
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +13,8 @@ import kotlinx.coroutines.flow.Flow
 interface SleepLogDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(sleepLog: SleepLog)
-
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(sleepLogs: List<SleepLog>)
     @Update
     suspend fun updateSleepLog(sleepLog: SleepLog)
 

@@ -21,6 +21,12 @@ class HealthMetricViewModel(private val healthMetricRepository: HealthMetricRepo
         }
     }
 
+    fun insertAllHealthMetrics(metrics: List<HealthMetric>) {
+        viewModelScope.launch {
+            healthMetricRepository.insertAllHealthMetrics(metrics)
+        }
+    }
+
     fun updateHealthMetric(healthMetric: HealthMetric) {
         viewModelScope.launch {
             healthMetricRepository.updateHealthMetric(healthMetric)

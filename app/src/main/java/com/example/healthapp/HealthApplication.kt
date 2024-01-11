@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.healthapp.data.HealthAppDatabase
 import com.example.healthapp.data.repository.WellnessTaskRepository
 
+
 class HealthApplication : Application() {
 
     // 延迟初始化 Repository
@@ -14,8 +15,5 @@ class HealthApplication : Application() {
         WellnessTaskRepository(database.wellnessTaskDAO())
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        // 其他初始化代码（如果有的话）
-    }
+
 }

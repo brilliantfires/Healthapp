@@ -1,13 +1,11 @@
 package com.example.healthapp.data.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.healthapp.data.entity.User
 import com.example.healthapp.data.entity.WellnessTask
 import kotlinx.coroutines.flow.Flow
 
@@ -15,7 +13,8 @@ import kotlinx.coroutines.flow.Flow
 interface WellnessTaskDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTask(wellnessTask: WellnessTask)
-
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(wellnessTasks: List<WellnessTask>)
     @Update
     suspend fun updateTask(wellnessTask: WellnessTask)
 

@@ -33,8 +33,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -95,7 +95,10 @@ class MainActivity : ComponentActivity() {
 //                //调用下面的可组合函数，Modifier.fillMaxSize()可以确保占满整个屏幕
 //                MyApp(modifier = Modifier.fillMaxSize())
 
-                TaskFormScreen(viewModel)
+                Column {
+                    TaskFormScreen(viewModel)
+                    TaskListScreen(viewModel)
+                }
             }
         }
     }

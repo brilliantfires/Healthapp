@@ -7,10 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -19,12 +16,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,7 +36,7 @@ import com.example.healthapp.data.viewmodel.WellnessTaskViewModelFactory
 import com.example.healthapp.ui.theme.HealthappTheme
 
 class TasksActivity : ComponentActivity() {
-     private val viewModel: WellnessTaskViewModel by viewModels {
+    private val viewModel: WellnessTaskViewModel by viewModels {
         WellnessTaskViewModelFactory((application as HealthApplication).repository)
     }
 
@@ -161,6 +155,7 @@ fun WellnessTaskItem(
         )
         Checkbox(
             checked = checked,
+            // 也就是判断这个 Box 是否被点击，如果被点击了，那么在下面会执行一系列的操作
             onCheckedChange = onCheckedChange
         )
         IconButton(onClick = onClose) {
@@ -208,23 +203,30 @@ fun TaskListScreen(viewModel: WellnessTaskViewModel) {
 }
 
 @Composable
+// 这里的组件就是通过 ViewModel 来对数据库进行操作的
 fun TaskFormScreen(viewModel: WellnessTaskViewModel) {
     // 创建一个可变状态，用于存储用户输入的演员信息
     var taskLabel by remember { mutableStateOf("") }
+    // 如果是 Boolean 类型的话，在后面赋值时要赋出具体的值，来确定类型
     var checked by remember { mutableStateOf(false) }
-    var isInputValid  by remember { mutableStateOf(true) }
+    var isInputValid by remember { mutableStateOf(true) }
 
     // 创建一个表单，让用户输入演员信息
     Column {
-        TextField(
-            value = taskLabel,
-            onValueChange = { taskLabel = it },
-            label = { Text("Label") }
-        )
-        Checkbox(
-            checked = checked,
-            onCheckedChange = { checked = it },
-        )
+        Row {
+            TextField(
+                value = taskLabel,
+                onValueChange = { taskLabel = it },
+                label = { Text("创建任务") }
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { checked = it },
+            )
+        }
 
         Button(
             onClick = {
@@ -239,7 +241,7 @@ fun TaskFormScreen(viewModel: WellnessTaskViewModel) {
                 }
             }
         ) {
-            Text("Save")
+            Text("保存")
         }
     }
 }

@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.healthapp.data.entity.HealthMetric
-import com.example.healthapp.data.entity.UserProfile
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -26,4 +25,7 @@ interface HealthMetricDAO {
 
     @Query("SELECT * FROM health_metrics")
     fun getAllHealthMetrics(): Flow<List<HealthMetric>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(metrics: List<HealthMetric>)
 }

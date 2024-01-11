@@ -17,7 +17,8 @@ interface UserDAO {
     // OnConflictStrategy.IGNORE 策略会忽略主键已存在于数据库中的新商品。
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUser(user: User)
-
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(users: List<User>)
     @Update
     suspend fun updateUser(user: User)
 
