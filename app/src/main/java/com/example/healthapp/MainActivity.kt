@@ -6,6 +6,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
@@ -78,16 +79,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.healthapp.data.viewmodel.WellnessTaskViewModel
+import com.example.healthapp.data.viewmodel.WellnessTaskViewModelFactory
 import com.example.healthapp.ui.theme.HealthappTheme
 
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: WellnessTaskViewModel by viewModels {
+        WellnessTaskViewModelFactory((application as HealthApplication).repository)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             HealthappTheme {
-                //调用下面的可组合函数，Modifier.fillMaxSize()可以确保占满整个屏幕
-                MyApp(modifier = Modifier.fillMaxSize())
+//                //调用下面的可组合函数，Modifier.fillMaxSize()可以确保占满整个屏幕
+//                MyApp(modifier = Modifier.fillMaxSize())
+
+                TaskFormScreen(viewModel)
             }
         }
     }

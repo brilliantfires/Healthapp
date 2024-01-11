@@ -16,10 +16,19 @@ import com.example.healthapp.data.entity.SleepLog
 import com.example.healthapp.data.entity.User
 import com.example.healthapp.data.entity.UserProfile
 import com.example.healthapp.data.dao.UserProfileDAO
+import com.example.healthapp.data.dao.WellnessTaskDAO
+import com.example.healthapp.data.entity.WellnessTask
 
 //将 exportSchema 设置为 false，不会保留架构版本记录的备份
 @Database(
-    entities = [User::class, UserProfile::class, HealthMetric::class, ActivityLog::class, SleepLog::class, Admin::class],
+    entities = [
+        User::class,
+        UserProfile::class,
+        HealthMetric::class,
+        ActivityLog::class,
+        SleepLog::class,
+        Admin::class,
+        WellnessTask::class],
     version = 1,
     exportSchema = false
 )
@@ -37,7 +46,9 @@ abstract class HealthAppDatabase : RoomDatabase() {
     abstract fun healthMetricDao(): HealthMetricDAO
     abstract fun activityLogDao(): ActivityLogDAO
     abstract fun sleepLogDao(): SleepLogDAO
-    abstract fun admin(): AdminDAO
+    abstract fun adminDAO(): AdminDAO
+    abstract fun wellnessTaskDAO(): WellnessTaskDAO
+
 
     companion object {
         //INSTANCE 变量将在数据库创建后保留对数据库的引用。
