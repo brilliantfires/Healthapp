@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Healthapp" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Healthapp" parent="android:Theme.Material.Light.NoActionBar">
+        <!--    <style name="Theme.Healthapp.NoActionBar">-->
+        <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+        <!--        <item name="android:windowNoTitle">true</item>-->
+        <!--        &lt;!&ndash; 设置其他需要的样式 &ndash;&gt;-->
+        <!--    </style>-->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>

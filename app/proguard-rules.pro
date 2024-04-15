@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
+-dontwarn java.lang.management.ManagementFactory
+-dontwarn java.lang.management.ThreadInfo
+-dontwarn java.lang.management.ThreadMXBean
+-dontwarn java.rmi.server.UID
+-dontwarn javax.management.MBeanServer
+-dontwarn javax.management.ObjectInstance
+-dontwarn javax.management.ObjectName
