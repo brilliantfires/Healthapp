@@ -7,6 +7,9 @@ import com.example.healthapp.data.entity.ArticleTagRelation
 import com.example.healthapp.data.repository.ArticleTagRelationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ArticleTagRelationViewModel(private val repository: ArticleTagRelationRepository) :
@@ -43,6 +46,23 @@ class ArticleTagRelationViewModel(private val repository: ArticleTagRelationRepo
 
     fun getArticleTagRelationByTagId(tagId: Int): Flow<List<ArticleTagRelation>> {
         return repository.getArticleTagRelationByTagId(tagId)
+    }
+
+    private val _articleTagRelations = MutableStateFlow<List<ArticleTagRelation>>(emptyList())
+    val articleTagRelations: StateFlow<List<ArticleTagRelation>> =
+        _articleTagRelations.asStateFlow()
+
+    fun loadArticleTagRelationsOnce() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val tagRelations = repository.getAllArticleTagRelationsN()
+            _articleTagRelations.value = tagRelations
+        }
+    }
+
+    fun getAllArticleTagRelationsAndStore() {
+        viewModelScope.launch {
+            repository.getAllTagRelationsAndStore()
+        }
     }
 }
 

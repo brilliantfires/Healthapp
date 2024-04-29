@@ -1,6 +1,7 @@
-package com.example.healthapp.ui
+package com.example.healthapp.ui.ScreenLevel1
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -55,7 +56,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.healthapp.Navigation.AbstractItemOfEnergyDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfExerciseDurationDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfFloorsClimbedDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfRunningDistanceDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfSleepRecordDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfStepDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfWalkDistanceDetailScreenDestination
+import com.example.healthapp.Navigation.AllAbstractScreenDestination
 import com.example.healthapp.Navigation.BottomNavigationBar
+import com.example.healthapp.Navigation.HealthDetailsScreenDestination
 import com.example.healthapp.R
 import com.example.healthapp.data.viewmodel.DailyActivityViewModel
 import com.example.healthapp.data.viewmodel.DisplayCardViewModel
@@ -147,9 +157,17 @@ fun AbstractScreen(
                                 .clip(CircleShape)
                                 .clickable(
                                     onClick = {
-                                        navController.navigate("HealthDetailScreen") {
+                                        navController.navigate(
+                                            HealthDetailsScreenDestination.createRoute(
+                                                userId
+                                            )
+                                        ) {
                                             // 清除HomePageScreen（包含）之上的堆栈
-                                            popUpTo("HealthDetailScreen") {
+                                            popUpTo(
+                                                HealthDetailsScreenDestination.createRoute(
+                                                    userId
+                                                )
+                                            ) {
                                                 inclusive = true // HomePageScreen 也被清除
                                             }
                                             launchSingleTop = true    // 避免重复创建HomePageScreen的实例
@@ -169,7 +187,7 @@ fun AbstractScreen(
             )
         },
         bottomBar = {
-            BottomNavigationBar(navController)
+            BottomNavigationBar(navController, userId)
         }
     ) { innerPadding ->
         AbstractBodyContent(
@@ -191,13 +209,13 @@ fun AbstractScreen(
 fun ChooseDisplayCardsDialog(
     displayCardViewModel: DisplayCardViewModel, onDismiss: () -> Unit
 ) {
-    val displayCards by displayCardViewModel.allCards.observeAsState(initial = emptyList())
+    val displayCards by displayCardViewModel.allCards.collectAsState(initial = emptyList())
 
     // 定义一个map来映射cardName到对应的显示词
     val cardNameToDisplayText = mapOf(
         "AbstractStepCard" to "步数",
         "AbstractFloorClimbedCard" to "爬楼梯层数",
-        "AbstractWalkingDistanceCard" to "走路距离",
+        "AbstractWalkingDistanceCard" to "步行距离",
         "AbstractExerciseDurationCard" to "跑步时间",
         "AbstractRunningDistanceCard" to "跑步距离",
         "AbstractEnergyExpenditureCard" to "能量消耗",
@@ -277,55 +295,58 @@ fun AbstractBodyContent(
     displayCardViewModel: DisplayCardViewModel,
 ) {
     val displayedCards by displayCardViewModel.displayedCards.observeAsState(initial = emptyList())
-    val allCards by displayCardViewModel.allCards.observeAsState(initial = emptyList())
+    val allCards by displayCardViewModel.allCards.collectAsState(initial = emptyList())
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         items(displayedCards) { card ->
             when (card.cardName) {
                 "AbstractStepCard" -> AbstractStepCard(
-                    userId, dailyActivityViewModel, navController, "AbstractItemOfStepDetailScreen"
+                    userId,
+                    dailyActivityViewModel,
+                    navController,
+                    AbstractItemOfStepDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractFloorClimbedCard" -> AbstractFloorClimbedCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfFloorsClimbedDetailScreen"
+                    AbstractItemOfFloorsClimbedDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractWalkingDistanceCard" -> AbstractWalkingDistanceCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfWalkDistanceDetailScreen"
+                    AbstractItemOfWalkDistanceDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractExerciseDurationCard" -> AbstractExerciseDurationCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfExerciseDurationDetailScreen"
+                    AbstractItemOfExerciseDurationDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractRunningDistanceCard" -> AbstractRunningDistanceCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfRunningDistanceDetailScreen"
+                    AbstractItemOfRunningDistanceDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractEnergyExpenditureCard" -> AbstractEnergyExpenditureCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfEnergyDetailScreen"
+                    AbstractItemOfEnergyDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractSleepRecordCard" -> AbstractSleepRecordeCard(
                     userId,
                     sleepRecordViewModel,
                     navController,
-                    "AbstractItemOfSleepRecordDetailScreen"
+                    AbstractItemOfSleepRecordDetailScreenDestination.createRoute(userId)
                 )
 
                 else -> {} // 对于不认识的cardName，不展示任何内容
@@ -334,38 +355,51 @@ fun AbstractBodyContent(
 
         // 根据需要添加更多卡片
         item {
-            Card(modifier = Modifier
-                .clickable {
-                    navController
-                        .navigate(route = "AllAbstractScreenDestination") {
+            Card(
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(
+                            route = AllAbstractScreenDestination.createRoute(
+                                userId
+                            )
+                        ) {
                             // 清除HomePageScreen（包含）之上的堆栈
-                            popUpTo(route = "AllAbstractScreenDestination") {
+                            popUpTo(
+                                route = AllAbstractScreenDestination.createRoute(
+                                    userId
+                                )
+                            ) {
                                 inclusive = true // HomePageScreen 也被清除
                             }
                             launchSingleTop = true    // 避免重复创建HomePageScreen的实例
                             restoreState = true       // 如果可能，恢复之前的状态
                         }
-                }
-                // .padding(vertical = 16.dp) // 在LazyColumn中，最好将padding移到Card内部或者使用padding()修饰符单独应用于每个item
+                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .background(color = Color.White)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Stars, contentDescription = "应用图标"
+                        imageVector = Icons.Filled.Stars,
+                        contentDescription = "应用图标",
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
                     )
                     Text(
                         text = "显示所有健康数据",
+                        modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowRight, contentDescription = "进入"
+                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "进入",
+                        modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, end = 16.dp)
                     )
                 }
             }
+
         }
     }
 
@@ -396,9 +430,12 @@ fun AbstractStepCard(
                     launchSingleTop = true    // 避免重复创建HomePageScreen的实例
                     restoreState = true       // 如果可能，恢复之前的状态
                 }
-            },
+            }
+
     ) {
-        Column {
+        Column(
+            modifier = Modifier.background(color = Color.White)
+        ) {
             Row(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -465,7 +502,7 @@ fun AbstractFloorClimbedCard(
                 }
             },
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = Color.White)) {
             Row(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -528,7 +565,7 @@ fun AbstractWalkingDistanceCard(
                 }
             },
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = Color.White)) {
             Row(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -537,7 +574,7 @@ fun AbstractWalkingDistanceCard(
                     imageVector = Icons.Filled.DirectionsWalk, contentDescription = "走路距离"
                 )
                 Text(
-                    text = "走路距离",
+                    text = "步行距离",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -553,7 +590,21 @@ fun AbstractWalkingDistanceCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "走路距离: ${latestActivity?.walkingDistance ?: "加载中..."}公里",
+                    text = buildString {
+                        val distance = latestActivity?.walkingDistance
+                        when {
+                            distance == null -> append("加载中...")
+                            distance > 1000.0 -> append(
+                                String.format(
+                                    "%.2f",
+                                    distance / 1000
+                                ) + " 公里"
+                            )
+
+                            distance in 30.0..1000.0 -> append("${distance}米")
+                            else -> append("${distance} 公里")
+                        }
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -591,7 +642,7 @@ fun AbstractExerciseDurationCard(
                 }
             },
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = Color.White)) {
             Row(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -619,7 +670,7 @@ fun AbstractExerciseDurationCard(
                 val hasFormatTime =
                     if (formattedTime == "00小时00分钟00秒") "该日期未跑步" else formattedTime
                 Text(
-                    text = "跑步时间: $hasFormatTime",
+                    text = hasFormatTime,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -657,7 +708,7 @@ fun AbstractRunningDistanceCard(
                 }
             },
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = Color.White)) {
             Row(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -682,7 +733,21 @@ fun AbstractRunningDistanceCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "跑步距离: ${latestActivity?.runningDistance ?: "加载中..."}公里",
+                    text = buildString {
+                        val distance = latestActivity?.runningDistance
+                        when {
+                            distance == null -> append("加载中...")
+                            distance > 1000.0 -> append(
+                                String.format(
+                                    "%.2f",
+                                    distance / 1000
+                                ) + "公里"
+                            )
+
+                            distance in 30.0..1000.0 -> append("${distance}米")
+                            else -> append("${distance} 公里")
+                        }
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -719,7 +784,7 @@ fun AbstractEnergyExpenditureCard(
                 }
             },
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = Color.White)) {
             Row(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -743,7 +808,7 @@ fun AbstractEnergyExpenditureCard(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "能量消耗: ${
+                Text(text = " ${
                     latestActivity?.energyExpenditure?.let {
                         String.format(
                             "%.2f", it
@@ -789,7 +854,7 @@ fun AbstractSleepRecordeCard(
                 }
             },
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = Color.White)) {
             Row(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -813,8 +878,11 @@ fun AbstractSleepRecordeCard(
                 modifier = Modifier.padding(all = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val formattedTime = formatTime(sleepRecord?.totalDuration ?: "00:00:00")
+                val hasFormatTime =
+                    if (formattedTime == "00小时00分钟00秒") "该日期暂无睡眠数据" else formattedTime
                 Text(
-                    text = " ${sleepRecord?.totalDuration ?: "加载中..."}",
+                    text = hasFormatTime,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )

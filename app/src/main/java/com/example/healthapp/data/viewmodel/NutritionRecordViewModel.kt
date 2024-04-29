@@ -5,6 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.healthapp.data.entity.NutritionRecord
 import com.example.healthapp.data.repository.NutritionRecordRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -22,7 +27,9 @@ class NutritionRecordViewModel(private val repository: NutritionRecordRepository
         repository.deleteNutritionRecord(nutritionRecord)
     }
 
-    fun getNutritionRecordsByUserId(userId: Int) = repository.getNutritionRecordsByUserId(userId)
+    fun getNutritionRecordsByUserId(userId: Int): Flow<List<NutritionRecord>> {
+        return repository.getNutritionRecordsByUserId(userId)
+    }
 
     fun getNutritionRecordsByDateRange(
         userId: Int,
@@ -30,6 +37,22 @@ class NutritionRecordViewModel(private val repository: NutritionRecordRepository
         endDate: LocalDateTime
     ) =
         repository.getNutritionRecordsByDateRange(userId, startDate, endDate)
+
+    private val _nutritionRecords = MutableStateFlow<List<NutritionRecord>>(emptyList())
+    val nutritionRecords: StateFlow<List<NutritionRecord>> = _nutritionRecords.asStateFlow()
+
+    fun loadNutritionRecordsOnce(userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val records = repository.getNutritionRecordsByUserIdN(userId)
+            _nutritionRecords.value = records
+        }
+    }
+
+    fun getNutritionRecordsByUserIdAndStore(userId: Int) {
+        viewModelScope.launch {
+            repository.getNutritionRecordsAndStore(userId)
+        }
+    }
 }
 
 class NutritionRecordViewModelFactory(private val nutritionRecordRepository: NutritionRecordRepository) :

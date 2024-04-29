@@ -14,6 +14,9 @@ interface DisplayCardDao {
     @Query("SELECT * FROM displayCards")
     fun getAllCards(): Flow<List<DisplayCard>>
 
+    @Query("SELECT * FROM displayCards")
+    suspend fun getAllCardsN(): List<DisplayCard>
+
     @Query("SELECT * FROM displayCards WHERE isDisplayed = 1")
     fun getDisplayedCards(): Flow<List<DisplayCard>>
 
@@ -32,4 +35,5 @@ interface DisplayCardDao {
 
     @Delete
     suspend fun deleteCard(displayCard: DisplayCard)
+
 }

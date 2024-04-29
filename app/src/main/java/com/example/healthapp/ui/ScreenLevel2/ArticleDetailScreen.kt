@@ -38,7 +38,7 @@ import com.example.healthapp.data.entity.Article
 import com.example.healthapp.data.viewmodel.ArticleMediaViewModel
 import com.example.healthapp.data.viewmodel.ArticlesViewModel
 import com.example.healthapp.data.viewmodel.AuthorsViewModel
-import com.example.healthapp.ui.ShowImageByName
+import com.example.healthapp.ui.ScreenLevel1.ShowImageByName
 import java.time.LocalDateTime
 
 val defaultArticle = Article(
@@ -105,14 +105,14 @@ fun ArticleDetailScreen(
                             Icon(
                                 imageVector = Icons.Filled.ArrowBackIos,
                                 contentDescription = stringResource(R.string.browse_text),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue
                             )
                             Text(
                                 text = stringResource(R.string.browse_text),
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = Color.Blue
                                 )
                             )
                         }

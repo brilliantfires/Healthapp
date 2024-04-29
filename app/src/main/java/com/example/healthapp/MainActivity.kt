@@ -9,6 +9,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.healthapp.Navigation.HealthNavHost
 import com.example.healthapp.data.viewmodel.ArticleMediaModelFactory
@@ -37,6 +39,8 @@ import com.example.healthapp.data.viewmodel.PhysicalProfileViewModel
 import com.example.healthapp.data.viewmodel.PhysicalProfileViewModelFactory
 import com.example.healthapp.data.viewmodel.SleepRecordViewModel
 import com.example.healthapp.data.viewmodel.SleepRecordViewModelFactory
+import com.example.healthapp.data.viewmodel.SyncViewModel
+import com.example.healthapp.data.viewmodel.SyncViewModelFactory
 import com.example.healthapp.data.viewmodel.UserViewModel
 import com.example.healthapp.data.viewmodel.UserViewModelFactory
 import com.example.healthapp.ui.theme.HealthappTheme
@@ -87,6 +91,9 @@ class MainActivity : ComponentActivity() {
         DisplayCardViewModelFactory((application as HealthApplication).displayCardRepository)
     }
 
+    private val syncViewModel: SyncViewModel by viewModels {
+        SyncViewModelFactory((application as HealthApplication).dataRepository)
+    }
 
     // 在Activity的onCreate方法中设置布局和行为
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,26 +107,29 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 // 使用Column布局来垂直排列子组件
                 // HealthNavHost是一个自定义的Composable函数，负责管理健康应用的导航
-                HealthNavHost(
-                    navController = navController,
-                    articleMediaViewModel = articleMediaViewModel,
-                    articlesViewModel = articlesViewModel,
-                    articleTagsViewModel = articleTagsViewModel,
-                    authorsViewModel = authorsViewModel,
-                    exerciseRecordViewModel = exerciseRecordViewModel,
-                    healthIndicationViewModel = healthIndicatorViewModel,
-                    medicationRecordViewModel = medicationRecordViewModel,
-                    nutritionRecordViewModel = nutritionRecordViewModel,
-                    physicalProfileViewModel = physicalProfileViewModel,
-                    sleepRecordViewModel = sleepRecordViewModel,
-                    articleTagRelationViewModel = articleTagRelationViewModel,
-                    userViewModel = userViewModel,
-                    dailyActivityViewModel = dailyActivityViewModel,
-                    displayCardViewModel = displayCardViewModel,
-                    contentPadding = PaddingValues() // PaddingValues设置内边距，这里设置为默认值
-                )
+                Surface(tonalElevation = 5.dp) {
+                    //LoginScreen(userViewModel,navController)
+                    HealthNavHost(
+                        navController = navController,
+                        articleMediaViewModel = articleMediaViewModel,
+                        articlesViewModel = articlesViewModel,
+                        articleTagsViewModel = articleTagsViewModel,
+                        authorsViewModel = authorsViewModel,
+                        exerciseRecordViewModel = exerciseRecordViewModel,
+                        healthIndicationViewModel = healthIndicatorViewModel,
+                        medicationRecordViewModel = medicationRecordViewModel,
+                        nutritionRecordViewModel = nutritionRecordViewModel,
+                        physicalProfileViewModel = physicalProfileViewModel,
+                        sleepRecordViewModel = sleepRecordViewModel,
+                        articleTagRelationViewModel = articleTagRelationViewModel,
+                        userViewModel = userViewModel,
+                        dailyActivityViewModel = dailyActivityViewModel,
+                        displayCardViewModel = displayCardViewModel,
+                        syncViewModel = syncViewModel,
+                        contentPadding = PaddingValues() // PaddingValues设置内边距，这里设置为默认值
+                    )
 
-                // TestScreen()
+                }
             }
         }
 

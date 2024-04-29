@@ -25,14 +25,14 @@ data class SleepRecord(
     @ColumnInfo(name = "date")
     val date: LocalDateTime, // Use a TypeConverter to handle Date
     @ColumnInfo(name = "totalDuration")
-    val totalDuration: String? = "", // TIME represented as String or Int, requires TypeConverter for complex representation
+    val totalDuration: String? = "0:0:0", // TIME represented as String or Int, requires TypeConverter for complex representation
     @ColumnInfo(name = "deepSleep")
-    val deepSleep: String? = "",
+    val deepSleep: String? = "0:0:0",
     @ColumnInfo(name = "lightSleep")
-    val lightSleep: String? = "",
+    val lightSleep: String? = "0:0:0",
     @ColumnInfo(name = "remSleep")
-    val remSleep: String? = "",
+    val remSleep: String? = "0:0:0",
     @ColumnInfo(name = "awakeDuration")
-    val awakeDuration: String? = ""
+    val awakeDuration: String? = "0:0:0"
 )
 

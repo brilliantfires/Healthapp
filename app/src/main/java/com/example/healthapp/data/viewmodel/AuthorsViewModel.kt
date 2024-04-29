@@ -5,6 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.healthapp.data.entity.Author
 import com.example.healthapp.data.repository.AuthorsRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthorsViewModel(private val repository: AuthorsRepository) : ViewModel() {
@@ -24,6 +28,22 @@ class AuthorsViewModel(private val repository: AuthorsRepository) : ViewModel() 
     }
 
     fun getAuthorById(authorID: Int) = repository.getAuthorById(authorID)
+
+    private val _authors = MutableStateFlow<List<Author>>(emptyList())
+    val authors: StateFlow<List<Author>> = _authors.asStateFlow()
+
+    fun loadAuthorsOnce() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val authors = repository.getAllAuthorsN()
+            _authors.value = authors
+        }
+    }
+
+    fun getAllAuthorsAndStore() {
+        viewModelScope.launch {
+            repository.getAllAuthorsAndStore()
+        }
+    }
 }
 
 class AuthorsModelFactory(private val authorsRepository: AuthorsRepository) :

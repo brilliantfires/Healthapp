@@ -32,6 +32,9 @@ interface ArticlesDAO {
     @Query("SELECT * FROM articles ORDER BY publishDate DESC")
     fun getAllArticles(): Flow<List<Article>>
 
+    @Query("SELECT * FROM articles")
+    suspend fun getAllArticlesN(): List<Article>
+
     // 通过tagId来获取对应的文章列表
     @Query(
         "SELECT DISTINCT * " +

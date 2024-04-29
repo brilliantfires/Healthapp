@@ -1,8 +1,8 @@
-package com.example.healthapp.ui
+package com.example.healthapp.ui.ScreenLevel1
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,12 +11,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,8 +29,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,16 +52,21 @@ import com.example.healthapp.Navigation.ArticleDetailScreenDestination
 import com.example.healthapp.Navigation.BottomNavigationBar
 import com.example.healthapp.R
 import com.example.healthapp.data.entity.Article
+import com.example.healthapp.data.entity.ArticleTag
 import com.example.healthapp.data.viewmodel.ArticleMediaViewModel
 import com.example.healthapp.data.viewmodel.ArticleTagRelationViewModel
 import com.example.healthapp.data.viewmodel.ArticleTagsViewModel
 import com.example.healthapp.data.viewmodel.ArticlesViewModel
 import com.example.healthapp.data.viewmodel.AuthorsViewModel
+import com.example.healthapp.data.viewmodel.SyncViewModel
+import com.example.healthapp.data.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrowseScreen(
+    syncViewModel: SyncViewModel,
+    userViewModel: UserViewModel,
     articlesViewModel: ArticlesViewModel,
     articleMediaViewModel: ArticleMediaViewModel,
     articleTagRelationViewModel: ArticleTagRelationViewModel,
@@ -69,102 +76,118 @@ fun BrowseScreen(
 ) {
     // 控制是否展示弹出的选择框
     var showDialog by remember { mutableStateOf(false) }
+    // 这里不知道为什么，总是会出现重复的articleTags,所以使用map来去重复
+    val selectedTags by articleTagRelationViewModel.getDisplayTag.map { tags -> tags.distinctBy { it.tagID } }
+        .collectAsState(initial = emptyList())
+    val allTags by articleTagRelationViewModel.allArticleTagRelations.collectAsState(initial = null)
+    val articles by articlesViewModel.allArticles.collectAsState(initial = emptyList())
+    var selectedTagId by remember { mutableStateOf<Int?>(null) }
+
+    val userId by userViewModel.currentUserId.observeAsState(initial = 1)
+    userViewModel.loadUserId()
+
+    // 确保在selectedTags加载后更新selectedTagId
+    LaunchedEffect(selectedTags) {
+        selectedTagId = selectedTags.firstOrNull()?.tagID
+    }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "浏览",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                },
-                navigationIcon = {
-                    Button(
-                        onClick = {
-                            showDialog = true
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surface, // 设置按钮背景颜色与背景一致
-                            contentColor = MaterialTheme.colorScheme.onSurface // 设置按钮内容颜色以确保可见性
-                        ),
-                        modifier = Modifier.padding(start = 8.dp),
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(8.dp),
+            Column {
+                TopAppBar(
+                    title = {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "编辑",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp,
-                                    color = Color.Blue
-                                )
+                                text = "浏览",
+                                style = MaterialTheme.typography.titleLarge
                             )
                         }
+                    },
+                    navigationIcon = {
+                        Button(
+                            onClick = {
+                                showDialog = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surface, // 设置按钮背景颜色与背景一致
+                                contentColor = MaterialTheme.colorScheme.onSurface // 设置按钮内容颜色以确保可见性
+                            ),
+                            modifier = Modifier.padding(start = 8.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .padding(8.dp),
+                            ) {
+                                Text(
+                                    text = "编辑",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 20.sp,
+                                        color = Color.Blue
+                                    )
+                                )
+                            }
+                        }
+                    },
+                    actions = {
+                        Button(
+                            onClick = {
+                                syncViewModel.pullAllArticle()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surface, // 设置按钮背景颜色与背景一致
+                                contentColor = MaterialTheme.colorScheme.onSurface // 设置按钮内容颜色以确保可见性
+                            ),
+                            modifier = Modifier.padding(start = 8.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .padding(8.dp),
+                            ) {
+                                Text(
+                                    text = "刷新",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 20.sp,
+                                        color = Color.Blue
+                                    )
+                                )
+                            }
+                        }
                     }
-                },
-                actions = {
-                    Box(
-                        modifier = Modifier
-                            .width(80.dp),
-                        contentAlignment = Alignment.Center
-
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ab5_hiit),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .clickable(
-                                    onClick = {
-                                        navController.navigate("HealthDetailScreen") {
-                                            // 清除HomePageScreen（包含）之上的堆栈
-                                            popUpTo("HealthDetailScreen") {
-                                                inclusive = true // HomePageScreen 也被清除
-                                            }
-                                            launchSingleTop = true    // 避免重复创建HomePageScreen的实例
-                                            restoreState = true       // 如果可能，恢复之前的状态
-                                        }
-                                    },
-                                    indication = rememberRipple(
-                                        bounded = true,
-                                        color = Color.Gray
-                                    ), // 这里正确应用rememberRipple
-                                    interactionSource = remember { MutableInteractionSource() } // 为点击提供一个交互源
-                                ),
-                            contentDescription = stringResource(id = R.string.avatar_text)
-                        )
+                )
+                // 选择栏
+                TagsButtonsRow(
+                    selectedTags = selectedTags,
+                    selectedTagId = selectedTagId,
+                    onSelectTag = { tagId ->
+                        selectedTagId = tagId
                     }
-                }
-            )
+                )
+            }
         },
         bottomBar = {
-            BottomNavigationBar(navController)
+            BottomNavigationBar(navController, userId)
         }
 
 
     ) { innerPadding ->
-        // 这里不知道为什么，总是会出现重复的articleTags,所以使用map来去重复
-        val selectedTags by articleTagRelationViewModel.getDisplayTag.map { tags -> tags.distinctBy { it.tagID } }
-            .collectAsState(initial = null)
-        val allTags by articleTagRelationViewModel.allArticleTagRelations.collectAsState(initial = null)
-        val articles by articlesViewModel.allArticles.collectAsState(initial = emptyList())
-
         LazyColumn(
             contentPadding = innerPadding,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(8.dp)) // 先裁剪视图
+
         ) {
-            selectedTags?.forEach { selectedTag ->
+            selectedTags?.find { it.tagID == selectedTagId }?.let { selectedTag ->
                 item {
                     CategoryNameDisplay(
                         tagId = selectedTag.tagID,
@@ -200,11 +223,15 @@ fun CategoryNameDisplay(
     val articleTag by articleTagsViewModel.getTagById(tagId).collectAsState(initial = null)
     Text(
         text = articleTag?.tagName ?: "",
-        fontSize = 20.sp,
+        style = MaterialTheme.typography.titleLarge,
         color = Color.Black,
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Divider(
+        color = Color.Gray, // 设置分隔线的颜色
+        thickness = 3.dp, // 设置分隔线的厚度
+        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp) // 设置分隔线两侧的间距
+    )
 }
 
 @Composable
@@ -223,10 +250,9 @@ fun ArticleCategory(
                 navController.navigate(
                     route = ArticleDetailScreenDestination.createRoute(article.articleID)
                 )
-
             }
     ) {
-        Column {
+        Column(modifier = Modifier.background(color = Color.White)) {
             ShowImageByName(imageName = image?.filePath ?: "", modifier = Modifier)
 
             Text(
@@ -268,7 +294,7 @@ fun ShowImageByName(
             contentScale = ContentScale.Crop,
             modifier = modifier
                 .fillMaxWidth()
-            //.height(120.dp)
+                .height(120.dp)
 
         )
     }
@@ -349,8 +375,48 @@ fun ChooseCategoryDialog(
                     )
                 }
             }
-
         }
     )
 }
 
+@Composable
+fun TagsButtonsRow(
+    selectedTags: List<ArticleTag>,
+    selectedTagId: Int?,
+    onSelectTag: (Int) -> Unit
+) {
+
+    if (selectedTags.isEmpty()) {
+        Text("没有标签可显示")
+    } else {
+        // 使用LazyRow来创建水平滚动的标签按钮
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+                .clip(RoundedCornerShape(8.dp))  // 先裁剪视图
+        ) {
+            items(selectedTags) { tag ->
+                // 判断当前标签是否被选中
+                val isSelected = selectedTagId == tag.tagID
+                Button(
+                    onClick = { onSelectTag(tag.tagID) },  // 点击按钮时更新选中的标签ID
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
+                        .wrapContentWidth(),  // 让按钮宽度包裹内容
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isSelected) Color.White else Color.LightGray, // 被选中的标签背景为白色，否则为浅灰色
+                        contentColor = if (isSelected) Color.Black else Color.Gray // 被选中的标签文字为黑色，否则为灰色
+                    )
+                ) {
+                    Text(
+                        tag.tagName,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 2.dp, vertical = 2.dp)
+                    )
+                }
+            }
+        }
+    }
+}

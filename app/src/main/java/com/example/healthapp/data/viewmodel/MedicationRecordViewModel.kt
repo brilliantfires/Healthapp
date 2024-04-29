@@ -5,6 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.healthapp.data.entity.MedicationRecord
 import com.example.healthapp.data.repository.MedicationRecordRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MedicationRecordViewModel(private val repository: MedicationRecordRepository) : ViewModel() {
@@ -23,8 +28,28 @@ class MedicationRecordViewModel(private val repository: MedicationRecordReposito
         repository.deleteMedicationRecord(medicationRecord)
     }
 
+    fun getMedicationRecordsCountByUserId(userId: Int): Flow<List<MedicationRecord>> {
+        return repository.getMedicationRecordsCountByUserId(userId)
+    }
+
     fun getMedicationRecordById(medicationID: Int) =
         repository.getMedicationRecordById(medicationID)
+
+    private val _medicationRecords = MutableStateFlow<List<MedicationRecord>>(emptyList())
+    val medicationRecords: StateFlow<List<MedicationRecord>> = _medicationRecords.asStateFlow()
+
+    fun loadMedicationRecordsOnce(userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val records = repository.getMedicationRecordsCountByUserIdN(userId)
+            _medicationRecords.value = records
+        }
+    }
+
+    fun getMedicationRecordByUserIdAndStore(userId: Int) {
+        viewModelScope.launch {
+            repository.getMedicationRecordsAndStore(userId)
+        }
+    }
 }
 
 

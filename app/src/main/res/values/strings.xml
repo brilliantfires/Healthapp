@@ -101,5 +101,6 @@
     <string name="all_abstract_text">所有健康数据</string>
     <string name="article_cover_text">文章封面</string>
     <string name="browse_text">浏览</string>
+    <string name="data_sync_text">数据同步与备份</string>
 
 </resources>

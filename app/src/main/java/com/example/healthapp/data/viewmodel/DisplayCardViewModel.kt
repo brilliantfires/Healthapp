@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.healthapp.data.entity.DisplayCard
 import com.example.healthapp.data.repository.DisplayCardRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class DisplayCardViewModel(private val repository: DisplayCardRepository) : ViewModel() {
-    val allCards: LiveData<List<DisplayCard>> = repository.allCards.asLiveData()
+    val allCards = repository.allCards
     val displayedCards: LiveData<List<DisplayCard>> = repository.displayedCards.asLiveData()
 
     fun insert(displayCard: DisplayCard) = viewModelScope.launch {
@@ -35,7 +38,15 @@ class DisplayCardViewModel(private val repository: DisplayCardRepository) : View
         }
     }
 
+    private val _displayCards = MutableStateFlow<List<DisplayCard>>(emptyList())
+    val displayCards: StateFlow<List<DisplayCard>> = _displayCards.asStateFlow()
 
+    fun loadDisplayCardsOnce() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val cards = repository.getAllCards()
+            _displayCards.value = cards
+        }
+    }
 }
 
 class DisplayCardViewModelFactory(private val displayCardRepository: DisplayCardRepository) :

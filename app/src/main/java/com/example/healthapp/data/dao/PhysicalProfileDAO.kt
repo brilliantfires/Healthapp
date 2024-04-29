@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PhysicalProfileDAO {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(physicalProfile: PhysicalProfile)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(physicalProfiles: List<PhysicalProfile>)
+
     @Update
     suspend fun updateUserProfile(physicalProfile: PhysicalProfile)
 
@@ -26,7 +28,13 @@ interface PhysicalProfileDAO {
     //这里函数用的是实体的类名UserProfile
     fun getUserProfileById(userID: Int): Flow<PhysicalProfile>
 
+    @Query("SELECT * FROM physicalProfile WHERE userID = :userID")
+    suspend fun getUserProfileByIdN(userID: Int): PhysicalProfile?
+
     @Query("SELECT * FROM physicalProfile")
     fun getAllUserProfiles(): Flow<List<PhysicalProfile>>
+
+    @Query("SELECT * FROM physicalProfile")
+    suspend fun getAllUserProfilesN(): List<PhysicalProfile>
 
 }

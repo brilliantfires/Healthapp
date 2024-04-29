@@ -1,4 +1,4 @@
-package com.example.healthapp.ui
+package com.example.healthapp.ui.ScreenLevel2
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -41,12 +41,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.healthapp.Navigation.AbstractItemOfEnergyDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfExerciseDurationDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfFloorsClimbedDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfRunningDistanceDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfSleepRecordDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfStepDetailScreenDestination
+import com.example.healthapp.Navigation.AbstractItemOfWalkDistanceDetailScreenDestination
+import com.example.healthapp.Navigation.HealthDetailsScreenDestination
 import com.example.healthapp.R
 import com.example.healthapp.data.viewmodel.DailyActivityViewModel
 import com.example.healthapp.data.viewmodel.DisplayCardViewModel
 import com.example.healthapp.data.viewmodel.PhysicalProfileViewModel
 import com.example.healthapp.data.viewmodel.SleepRecordViewModel
 import com.example.healthapp.data.viewmodel.UserViewModel
+import com.example.healthapp.ui.ScreenLevel1.AbstractEnergyExpenditureCard
+import com.example.healthapp.ui.ScreenLevel1.AbstractExerciseDurationCard
+import com.example.healthapp.ui.ScreenLevel1.AbstractFloorClimbedCard
+import com.example.healthapp.ui.ScreenLevel1.AbstractRunningDistanceCard
+import com.example.healthapp.ui.ScreenLevel1.AbstractSleepRecordeCard
+import com.example.healthapp.ui.ScreenLevel1.AbstractStepCard
+import com.example.healthapp.ui.ScreenLevel1.AbstractWalkingDistanceCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,13 +123,13 @@ fun AllAbstractScreen(
                         Icon(
                             imageVector = Icons.Filled.ArrowBackIos,
                             contentDescription = stringResource(id = R.string.back_text),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.Blue
                         )
                         Text(
                             text = "摘要", style = TextStyle(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.primary
+                                color = Color.Blue
                             )
                         )
                     }
@@ -135,9 +150,13 @@ fun AllAbstractScreen(
                             .clip(CircleShape)
                             .clickable(
                                 onClick = {
-                                    navController.navigate("HealthDetailScreen") {
+                                    navController.navigate(
+                                        HealthDetailsScreenDestination.createRoute(
+                                            userId
+                                        )
+                                    ) {
                                         // 清除HomePageScreen（包含）之上的堆栈
-                                        popUpTo("HealthDetailScreen") {
+                                        popUpTo(HealthDetailsScreenDestination.createRoute(userId)) {
                                             inclusive = true // HomePageScreen 也被清除
                                         }
                                         launchSingleTop = true    // 避免重复创建HomePageScreen的实例
@@ -177,87 +196,63 @@ fun AllAbstractBodyContent(
     displayCardViewModel: DisplayCardViewModel,
 ) {
     val displayedCards by displayCardViewModel.displayedCards.observeAsState(initial = emptyList())
-    val allCards by displayCardViewModel.allCards.observeAsState(initial = emptyList())
+    val allCards by displayCardViewModel.allCards.collectAsState(initial = emptyList())
 
     LazyColumn(modifier = modifier.padding(16.dp)) {
         items(allCards) { card ->
             when (card.cardName) {
                 "AbstractStepCard" -> AbstractStepCard(
-                    userId, dailyActivityViewModel, navController, "AbstractItemOfStepDetailScreen"
+                    userId,
+                    dailyActivityViewModel,
+                    navController,
+                    AbstractItemOfStepDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractFloorClimbedCard" -> AbstractFloorClimbedCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfFloorsClimbedDetailScreen"
+                    AbstractItemOfFloorsClimbedDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractWalkingDistanceCard" -> AbstractWalkingDistanceCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfWalkDistanceDetailScreen"
+                    AbstractItemOfWalkDistanceDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractExerciseDurationCard" -> AbstractExerciseDurationCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfExerciseDurationDetailScreen"
+                    AbstractItemOfExerciseDurationDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractRunningDistanceCard" -> AbstractRunningDistanceCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfRunningDistanceDetailScreen"
+                    AbstractItemOfRunningDistanceDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractEnergyExpenditureCard" -> AbstractEnergyExpenditureCard(
                     userId,
                     dailyActivityViewModel,
                     navController,
-                    "AbstractItemOfEnergyDetailScreen"
+                    AbstractItemOfEnergyDetailScreenDestination.createRoute(userId)
                 )
 
                 "AbstractSleepRecordCard" -> AbstractSleepRecordeCard(
                     userId,
                     sleepRecordViewModel,
                     navController,
-                    "AbstractItemOfSleepRecordDetailScreen"
+                    AbstractItemOfSleepRecordDetailScreenDestination.createRoute(userId)
                 )
 
                 else -> {} // 对于不认识的cardName，不展示任何内容
             }
         }
-
-        /*// 根据需要添加更多卡片
-        item {
-            Card(modifier = Modifier.clickable { }
-                // .padding(vertical = 16.dp) // 在LazyColumn中，最好将padding移到Card内部或者使用padding()修饰符单独应用于每个item
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Stars,
-                        contentDescription = "应用图标"
-                    )
-                    Text(
-                        text = "显示所有健康数据",
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowRight,
-                        contentDescription = "进入"
-                    )
-                }
-            }
-        }*/
     }
 
 }

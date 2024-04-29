@@ -1,5 +1,6 @@
 package com.example.healthapp.ui.ScreenLevel3
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -91,14 +92,14 @@ fun ActivityEnergyConsumptionScreen(
                             Icon(
                                 imageVector = Icons.Filled.ArrowBackIos,
                                 contentDescription = stringResource(id = R.string.back_text),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue
                             )
                             Text(
                                 text = stringResource(id = R.string.back_text),
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = Color.Blue
                                 )
                             )
                         }
@@ -112,7 +113,7 @@ fun ActivityEnergyConsumptionScreen(
                         Icon(
                             Icons.Filled.Edit,
                             contentDescription = stringResource(id = R.string.edit_text),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.Blue
                         )
                     }
                 }
@@ -246,6 +247,7 @@ fun EnergyExpenditureRow(energy: Double, date: String) {
     ) {
         Row(
             modifier = Modifier
+                .background(color = Color.White)
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically

@@ -27,10 +27,13 @@ data class HealthIndicator(
     val date: LocalDateTime?,
     @ColumnInfo(name = "bloodPressure")
     val bloodPressure: String,
+
     @ColumnInfo(name = "cholesterol")
     val cholesterol: Double,
+
     @ColumnInfo(name = "glucoseLevel")
     val glucoseLevel: Double,
+
     @ColumnInfo(name = "otherIndicators")
     val otherIndicators: String?
 )

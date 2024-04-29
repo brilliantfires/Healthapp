@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 @Entity(tableName = "users")
 data class User(
     @PrimaryKey(autoGenerate = true)
-    val userId: Int = 0,
+    var userId: Int = 0,
     @ColumnInfo(name = "username")
     val username: String,
     @ColumnInfo(name = "email")

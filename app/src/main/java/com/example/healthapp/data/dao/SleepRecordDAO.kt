@@ -40,4 +40,22 @@ interface SleepRecordDAO {
     @Query("SELECT * FROM sleepRecord WHERE userID=:userId ORDER BY date DESC LIMIT 7")
     fun getLatestSevenSleepRecord(userId: Int): Flow<List<SleepRecord>>
 
+    // 根据输入的时间来选择一定时间段的睡眠记录
+    @Query("SELECT * FROM sleepRecord WHERE userId = :userId AND date >= :startDate ORDER BY date")
+    fun getSleepRecordsFrom(startDate: LocalDateTime, userId: Int): Flow<List<SleepRecord>>
+
+    // 根据用户Id来获取数据
+    @Query("SELECT * FROM sleepRecord WHERE userID=:userId")
+    fun getAllSleepRecordsByUserId(userId: Int): Flow<List<SleepRecord>>
+
+    @Query("SELECT * FROM sleepRecord WHERE userID=:userId")
+    suspend fun getAllSleepRecordsByUserIdN(userId: Int): List<SleepRecord>
+
+    @Query("SELECT * FROM sleepRecord WHERE userID=:userId AND date=:date")
+    suspend fun getSleepRecordByUserIdAndDate(userId: Int, date: LocalDateTime): SleepRecord?
+
+    @Query("SELECT * FROM sleepRecord")
+    suspend fun getAllSleepRecords(): List<SleepRecord>
+
+
 }

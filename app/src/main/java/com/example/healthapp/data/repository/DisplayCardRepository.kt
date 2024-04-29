@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 class DisplayCardRepository(private val displayCardDao: DisplayCardDao) {
     val allCards: Flow<List<DisplayCard>> = displayCardDao.getAllCards()
+    suspend fun getAllCards(): List<DisplayCard> {
+        return displayCardDao.getAllCardsN()
+    }
+
     val displayedCards: Flow<List<DisplayCard>> = displayCardDao.getDisplayedCards()
 
     suspend fun insert(displayCard: DisplayCard) {

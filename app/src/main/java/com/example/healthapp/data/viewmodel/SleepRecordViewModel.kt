@@ -5,10 +5,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.healthapp.data.entity.SleepRecord
 import com.example.healthapp.data.repository.SleepRecordRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -43,9 +46,7 @@ class SleepRecordViewModel(private val repository: SleepRecordRepository) : View
             } else {
                 // 如果不存在，创建新的记录并插入
                 val newSleepRecord = SleepRecord(
-                    userID = userId,
-                    date = date,
-                    totalDuration = totalDuration
+                    userID = userId, date = date, totalDuration = totalDuration
                 )
                 repository.insertSleepRecord(newSleepRecord)
             }
@@ -70,6 +71,44 @@ class SleepRecordViewModel(private val repository: SleepRecordRepository) : View
     fun getLatestSevenSleepRecord(userId: Int): Flow<List<SleepRecord>> {
         return repository.getLatestSevenSleepRecord(userId)
     }
+
+    // 获取最近一段时间的SleepRecord数据
+    // 获取最近1个月的数据
+    fun getLastMonthSleepRecords(userId: Int): Flow<List<SleepRecord>> {
+        val startDate = LocalDate.now().minusMonths(1).atStartOfDay()
+        return repository.getSleepRecordsFrom(startDate, userId)
+    }
+
+    // 获取最近一年的数据
+    fun getLastYearSleepRecords(userId: Int): Flow<List<SleepRecord>> {
+        val startDate = LocalDate.now().minusYears(1).atStartOfDay()
+        return repository.getSleepRecordsFrom(startDate, userId)
+    }
+
+    // 根据userId获取所有的数据
+    fun getAllSleepRecordsByUserId(userId: Int): Flow<List<SleepRecord>> {
+        return repository.getAllSleepRecordsByUserId(userId)
+    }
+
+    // 使用网络协议Retrofit来读取MySQL中的数据，进行同步操作
+    // 同步的逻辑是，判断userid相同，如果该日期已经存在就update数据，如果该日期未存在数据，就插入数据
+    // 在更新数据的时候，其中有sleepId，需要防止sleepId冲突
+    fun getSleepRecordsByUserIdAndStore(userId: Int) {
+        viewModelScope.launch {
+            repository.getSleepRecordAndStore(userId)
+        }
+    }
+
+    private val theSleepRecord = MutableStateFlow<List<SleepRecord>>(emptyList())
+    val sleepRecords = theSleepRecord
+    fun getSleepRecordsByUserId(userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val sleepRecords = repository.getAllSleepRecordsByUserIdN(userId)
+            theSleepRecord.value = sleepRecords
+        }
+    }
+
+
 }
 
 class SleepRecordViewModelFactory(private val sleepRecordRepository: SleepRecordRepository) :

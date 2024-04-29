@@ -5,7 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.healthapp.data.entity.PhysicalProfile
 import com.example.healthapp.data.repository.PhysicalProfileRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class PhysicalProfileViewModel(private val repository: PhysicalProfileRepository) : ViewModel() {
@@ -16,8 +20,10 @@ class PhysicalProfileViewModel(private val repository: PhysicalProfileRepository
         repository.insertPhysicalProfile(physicalProfile)
     }
 
-    fun updatePhysicalProfile(physicalProfile: PhysicalProfile) = viewModelScope.launch {
-        repository.updatePhysicalProfile(physicalProfile)
+    fun updatePhysicalProfile(physicalProfile: PhysicalProfile) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updatePhysicalProfile(physicalProfile)
+        }
     }
 
     fun deletePhysicalProfile(physicalProfile: PhysicalProfile) = viewModelScope.launch {
@@ -26,6 +32,22 @@ class PhysicalProfileViewModel(private val repository: PhysicalProfileRepository
 
     fun getPhysicalProfileById(userId: Int): Flow<PhysicalProfile> {
         return repository.getPhysicalProfileById(userId)
+    }
+
+    private val _physicalProfile = MutableStateFlow<PhysicalProfile?>(null)
+    val physicalProfile: StateFlow<PhysicalProfile?> = _physicalProfile.asStateFlow()
+
+    fun loadPhysicalProfileOnce(userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val profile = repository.getPhysicalProfileByIdN(userId)
+            _physicalProfile.value = profile
+        }
+    }
+
+    fun getPhysicalProfileByUserIdAndStore(userId: Int) {
+        viewModelScope.launch {
+            repository.getPhysicalProfileAndStore(userId)
+        }
     }
 }
 

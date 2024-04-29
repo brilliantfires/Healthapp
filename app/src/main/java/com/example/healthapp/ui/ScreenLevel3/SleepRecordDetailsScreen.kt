@@ -1,5 +1,6 @@
 package com.example.healthapp.ui.ScreenLevel3
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,6 +52,7 @@ import com.example.healthapp.R
 import com.example.healthapp.data.entity.SleepRecord
 import com.example.healthapp.data.viewmodel.SleepRecordViewModel
 import com.example.healthapp.ui.ToolClass.CustomDateInput
+import com.example.healthapp.ui.ToolClass.formatTime
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -99,14 +101,14 @@ fun SleepRecordDetailsScreen(
                             Icon(
                                 imageVector = Icons.Filled.ArrowBackIos,
                                 contentDescription = stringResource(id = R.string.back_text),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue
                             )
                             Text(
                                 text = stringResource(id = R.string.back_text),
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = Color.Blue
                                 )
                             )
                         }
@@ -120,6 +122,7 @@ fun SleepRecordDetailsScreen(
                         Icon(
                             Icons.Filled.Edit,
                             contentDescription = "编辑",
+                            tint=Color.Blue
                         )
                     }
                 }
@@ -175,12 +178,11 @@ fun AddSleepRecordDialog(
     val dateText = remember { mutableStateOf("") }
     val totalDuration = remember { mutableStateOf("") }
     LaunchedEffect(hours, minutes, seconds) {
-        totalDuration.value = "$hours" + "小时" + "${minutes.padStart(2, '0')}" + "分钟" + "${
-            seconds.padStart(
-                2,
-                '0'
-            )
-        }" + "秒"
+        totalDuration.value = hours + ":" + minutes.padStart(2, '0') + ":" +
+                seconds.padStart(
+                    2,
+                    '0'
+                )
     }
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -278,13 +280,13 @@ fun SleepRecordRow(sleepRecord: SleepRecord) {
 
         ) {
         Row(
-            modifier = Modifier
+            modifier = Modifier.background(color = Color.White)
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = totalDuration ?: "暂时无睡眠信息",
+                text = formatTime(totalDuration ?: "暂时无睡眠信息"),
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Start

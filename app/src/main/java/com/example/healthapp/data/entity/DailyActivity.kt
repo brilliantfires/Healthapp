@@ -34,7 +34,7 @@ data class DailyActivity(
     val walkingDistance: Double? = 0.0,  // Using 'Double' for DECIMAL type
 
     @ColumnInfo(name = "exerciseDuration")
-    val exerciseDuration: String? = "",  // Assuming TIME format as String "HH:MM:SS"
+    val exerciseDuration: String? = "0:0:0",  // Assuming TIME format as String "HH:MM:SS"
 
     @ColumnInfo(name = "heartRate")
     val heartRate: Int? = 0,

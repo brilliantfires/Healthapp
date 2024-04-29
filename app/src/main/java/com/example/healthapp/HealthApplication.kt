@@ -1,13 +1,17 @@
 package com.example.healthapp
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import com.example.healthapp.data.HealthAppDatabase
+import com.example.healthapp.data.mysql.RetrofitClient
 import com.example.healthapp.data.repository.ArticleMediaRepository
 import com.example.healthapp.data.repository.ArticleTagRelationRepository
 import com.example.healthapp.data.repository.ArticleTagsRepository
 import com.example.healthapp.data.repository.ArticlesRepository
 import com.example.healthapp.data.repository.AuthorsRepository
 import com.example.healthapp.data.repository.DailyActivityRepository
+import com.example.healthapp.data.repository.DataRepository
 import com.example.healthapp.data.repository.DisplayCardRepository
 import com.example.healthapp.data.repository.ExerciseRecordRepository
 import com.example.healthapp.data.repository.HealthIndicatorRepository
@@ -20,14 +24,21 @@ import com.example.healthapp.data.repository.UserRepository
 
 class HealthApplication : Application() {
 
+    // 创建 SharedPreferences 的实例
+    val sharedPreferences: SharedPreferences by lazy {
+        getSharedPreferences("health_app_preferences", Context.MODE_PRIVATE)
+    }
+
     val userRepository: UserRepository by lazy {
         val database = HealthAppDatabase.getDatabase(this)
-        UserRepository(database.userDao())
+        val apiService = RetrofitClient.apiService
+        UserRepository(apiService, database.userDao(), sharedPreferences)
     }
 
     val physicalProfileRepository: PhysicalProfileRepository by lazy {
         val database = HealthAppDatabase.getDatabase(this)
-        PhysicalProfileRepository(database.physicalProfileDao())
+        val apiService = RetrofitClient.apiService
+        PhysicalProfileRepository(apiService, database.physicalProfileDao())
     }
 
     val healthIndicatorRepository: HealthIndicatorRepository by lazy {
@@ -42,7 +53,8 @@ class HealthApplication : Application() {
 
     val sleepRecordRepository: SleepRecordRepository by lazy {
         val database = HealthAppDatabase.getDatabase(this)
-        SleepRecordRepository(database.sleepRecordDao())
+        val apiService = RetrofitClient.apiService
+        SleepRecordRepository(apiService, database.sleepRecordDao())
     }
 
     val nutritionRecordRepository: NutritionRecordRepository by lazy {
@@ -89,8 +101,25 @@ class HealthApplication : Application() {
         val database = HealthAppDatabase.getDatabase(this)
         DisplayCardRepository(database.displayCardDAO())
     }
-
-    companion object {
-        // Optionally, if needed, add a companion object here
+    val dataRepository: DataRepository by lazy {
+        val apiService = RetrofitClient.apiService
+        val database = HealthAppDatabase.getDatabase(this)
+        DataRepository(
+            apiService,
+            database.articleMediaDAO(),
+            database.articlesDao(),
+            database.articleTagRelationDao(),
+            database.articleTagsDao(),
+            database.authorDao(),
+            database.dailyActivityDAO(),
+            database.displayCardDAO(),
+            database.exerciseRecordDao(),
+            database.healthIndicationDao(),
+            database.medicationRecordDao(),
+            database.nutritionRecordDao(),
+            database.physicalProfileDao(),
+            database.sleepRecordDao(),
+            database.userDao()
+        )
     }
 }

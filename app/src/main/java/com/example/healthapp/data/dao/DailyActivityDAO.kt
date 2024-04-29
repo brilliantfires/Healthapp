@@ -15,7 +15,7 @@ interface DailyActivityDAO {
     // suspend挂起函数是一种特殊类型的函数，它可以在执行长时间操作时暂停（挂起）其执行，而不会阻塞线程。
     // 添加参数 OnConflict 并为其赋值 OnConflictStrategy.IGNORE。参数 OnConflict 用于告知 Room 在发生冲突时应该执行的操作。
     // OnConflictStrategy.IGNORE 策略会忽略主键已存在于数据库中的新商品。
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDailyActivity(dailyActivity: DailyActivity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -36,6 +36,9 @@ interface DailyActivityDAO {
     @Query("SELECT * FROM dailyActivity")
     fun getAllDailyActivities(): Flow<List<DailyActivity>>
 
+    @Query("SELECT * FROM dailyActivity")
+    suspend fun getAllDailyActivitiesN(): List<DailyActivity>
+
     @Query("SELECT * FROM dailyActivity WHERE userID=:userId AND date=:date")
     fun getDailyActivityByIdAndDate(userId: Int, date: LocalDateTime): Flow<DailyActivity>
 
@@ -47,4 +50,10 @@ interface DailyActivityDAO {
     @Query("SELECT * FROM dailyActivity WHERE userId = :userId AND date >= :startDate ORDER BY date")
     fun getActivitiesFrom(startDate: LocalDateTime, userId: Int): Flow<List<DailyActivity>>
 
+    // 选择在对应的userId的所有数据
+    @Query("SELECT * FROM dailyActivity WHERE userID = :userId")
+    fun getAllActivitiesByUserId(userId: Int): Flow<List<DailyActivity>>
+
+    @Query("SELECT * FROM dailyActivity WHERE userID = :userId")
+    suspend fun getAllActivitiesByUserIdN(userId: Int): List<DailyActivity>
 }

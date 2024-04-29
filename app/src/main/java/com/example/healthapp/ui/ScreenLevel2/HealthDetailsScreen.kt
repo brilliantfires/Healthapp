@@ -1,6 +1,7 @@
-package com.example.healthapp.ui
+package com.example.healthapp.ui.ScreenLevel2
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -54,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,9 +69,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 import java.time.format.DateTimeFormatter
-
-//import androidx.lifecycle.viewModelScope
-
 
 // 该类主要是显示我的主页中的详情界面
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,14 +118,7 @@ fun HealthDetailsScreen(
                             if (isEditMode) {
                                 cancelEdit() // 编辑模式下点击取消
                             } else {
-                                navController.navigate("SettingScreen") {
-                                    // 清除HomePageScreen（包含）之上的堆栈
-                                    popUpTo("SettingScreen") {
-                                        inclusive = true // HomePageScreen 也被清除
-                                    }
-                                    launchSingleTop = true    // 避免重复创建HomePageScreen的实例
-                                    restoreState = true       // 如果可能，恢复之前的状态
-                                }
+                                navController.popBackStack()
                                 onBackClicked() // 非编辑模式下执行返回操作
                             }
                         },
@@ -134,7 +126,9 @@ fun HealthDetailsScreen(
                             containerColor = MaterialTheme.colorScheme.surface, // 设置按钮背景颜色与背景一致
                             contentColor = MaterialTheme.colorScheme.onSurface // 设置按钮内容颜色以确保可见性
                         ),
-                        modifier = Modifier.padding(start = 8.dp).width(80.dp),
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .width(80.dp),
                         contentPadding = PaddingValues(0.dp)
                     ) {
                         if (!isEditMode) Row(
@@ -145,14 +139,14 @@ fun HealthDetailsScreen(
                             Icon(
                                 imageVector = Icons.Filled.ArrowBackIos,
                                 contentDescription = stringResource(id = R.string.back_text),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue
                             )
                             Text(
                                 text = "设置",
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = Color.Blue
                                 )
                             )
                         } else Row(
@@ -163,14 +157,14 @@ fun HealthDetailsScreen(
                             Icon(
                                 imageVector = Icons.Filled.Close,
                                 contentDescription = stringResource(id = R.string.cancel_text),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue
                             )
                             Text(
                                 text = "取消",
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = Color.Blue
                                 )
                             )
                         }
@@ -191,7 +185,7 @@ fun HealthDetailsScreen(
                             contentDescription = if (isEditMode) stringResource(id = R.string.check_text) else stringResource(
                                 id = R.string.edit_text
                             ),
-                            tint = if (isEditMode) Color.Gray else Color.Black // 在编辑模式下使用灰色图标表示禁用
+                            tint = if (isEditMode) Color.Gray else Color.Blue // 在编辑模式下使用灰色图标表示禁用
 
                         )
                     }
@@ -249,6 +243,7 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(color = Color.White)
                         .padding(top = 16.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -265,7 +260,9 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray,
                     thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp)
                 )
 
                 val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -273,6 +270,7 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(color = Color.White)
                         .padding(vertical = 8.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -289,12 +287,15 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray,
                     thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp)
                 )
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(color = Color.White)
                         .padding(vertical = 8.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -311,12 +312,15 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray,
                     thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp)
                 )
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(color = Color.White)
                         .padding(vertical = 8.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -333,12 +337,15 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray,
                     thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp)
                 )
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(color = Color.White)
                         .padding(vertical = 8.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -355,12 +362,15 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray,
                     thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp)
                 )
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(color = Color.White)
                         .padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -378,7 +388,9 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
             }
             Spacer(modifier = Modifier.height(16.dp))
             Card() {
-                Row {
+                Row(
+                    modifier = Modifier.background(color = Color.White)
+                ) {
                     Text(
                         text = stringResource(id = R.string.height_text),
                         modifier = Modifier
@@ -405,10 +417,14 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray, // 设置分隔线的颜色
                     thickness = 1.dp, // 设置分隔线的厚度
-                    modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                 )
                 // 体重
-                Row {
+                Row(
+                    modifier = Modifier.background(color = Color.White)
+                ) {
                     Text(
                         text = stringResource(id = R.string.weight_text),
                         modifier = Modifier
@@ -436,9 +452,13 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray, // 设置分隔线的颜色
                     thickness = 1.dp, // 设置分隔线的厚度
-                    modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                 )
-                Row {
+                Row(
+                    modifier = Modifier.background(color = Color.White)
+                ) {
                     Text(
                         text = stringResource(id = R.string.bmi_text),
                         modifier = Modifier
@@ -469,9 +489,13 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray, // 设置分隔线的颜色
                     thickness = 1.dp, // 设置分隔线的厚度
-                    modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                 )
-                Row {
+                Row(
+                    modifier = Modifier.background(color = Color.White)
+                ) {
                     Text(
                         text = stringResource(id = R.string.shoeSize_text),
                         modifier = Modifier
@@ -498,9 +522,13 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray, // 设置分隔线的颜色
                     thickness = 1.dp, // 设置分隔线的厚度
-                    modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                 )
-                Row {
+                Row(
+                    modifier = Modifier.background(color = Color.White)
+                ) {
                     Text(
                         text = stringResource(id = R.string.wearsGlasses_text),
                         modifier = Modifier
@@ -530,10 +558,14 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                 Divider(
                     color = Color.Gray, // 设置分隔线的颜色
                     thickness = 1.dp, // 设置分隔线的厚度
-                    modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                 )
                 // 是否坐轮椅
-                Row {
+                Row(
+                    modifier = Modifier.background(color = Color.White)
+                ) {
                     Text(
                         text = stringResource(id = R.string.wheelchair_text),
                         modifier = Modifier
@@ -578,7 +610,9 @@ fun ShowDetailContent(user: User?, physicalProfile: PhysicalProfile?) {
                             stringResource(id = R.string.nothing_text)
                         }
                     }"
-                Row {
+                Row(
+                    modifier = Modifier.background(color = Color.White)
+                ) {
                     Text(
                         text = stringResource(id = R.string.heart_rate_medication_text),
                         modifier = Modifier
@@ -821,6 +855,7 @@ fun EditDetailContent(
                         heartRateAffectingDrugs = heartRateAffectingDrugs
                     )
                     val updatedPhysicalProfile = physicalProfile?.copy(
+                        userID = user?.userId ?: 1,
                         height = height,
                         weight = weight,
                         bmi = bmi,
@@ -835,9 +870,16 @@ fun EditDetailContent(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(8.dp), colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Blue
+                )
             ) {
-                Text("保存")
+                Text(
+                    "保存",
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     ) { innerPadding ->
@@ -848,11 +890,12 @@ fun EditDetailContent(
                 .fillMaxWidth()
         ) {
             item {
-                Card {
+                Card() {
                     // 编辑姓名
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(top = 16.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -876,12 +919,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 编辑出生年月
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -949,12 +995,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 编辑身高
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -981,12 +1030,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 编辑体重
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -1013,12 +1065,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 编辑双脚尺码
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -1042,12 +1097,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 设置性别
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 0.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -1064,12 +1122,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 设置血型
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 0.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -1088,12 +1149,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 设置皮肤类型
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 0.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -1111,12 +1175,15 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 编辑影响心率的药物
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(color = Color.White)
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically // 确保行内元素垂直居中
                     ) {
@@ -1140,16 +1207,16 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 编辑是否坐轮椅
                     Row(
-                        modifier = Modifier.padding(
-                            top = 8.dp,
-                            bottom = 16.dp,
-                            start = 16.dp,
-                            end = 16.dp
-                        ),
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -1166,16 +1233,20 @@ fun EditDetailContent(
                     Divider(
                         color = Color.Gray, // 设置分隔线的颜色
                         thickness = 1.dp, // 设置分隔线的厚度
-                        modifier = Modifier.padding(horizontal = 16.dp) // 设置分隔线两侧的间距
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(horizontal = 16.dp) // 设置分隔线两侧的间距
                     )
                     // 编辑是否戴眼镜
                     Row(
-                        modifier = Modifier.padding(
-                            top = 8.dp,
-                            bottom = 16.dp,
-                            start = 16.dp,
-                            end = 16.dp
-                        ),
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(
+                                top = 8.dp,
+                                bottom = 16.dp,
+                                start = 16.dp,
+                                end = 16.dp
+                            ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(

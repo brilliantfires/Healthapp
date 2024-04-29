@@ -5,10 +5,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.healthapp.data.entity.DailyActivity
 import com.example.healthapp.data.repository.DailyActivityRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class DailyActivityViewModel(private val repository: DailyActivityRepository) :
@@ -190,6 +195,57 @@ class DailyActivityViewModel(private val repository: DailyActivityRepository) :
     // 获取用户从特定日期开始的活动数据
     fun getActivitiesFrom(startDate: LocalDateTime, userId: Int): Flow<List<DailyActivity>> {
         return repository.getActivitiesFrom(startDate, userId)
+    }
+
+    // 获取最近一个月的数据
+    fun getLastMonthActivities(userId: Int): Flow<List<DailyActivity>> {
+        val startDate = LocalDate.now().minusMonths(1).atStartOfDay()
+        return repository.getActivitiesFrom(startDate, userId)
+    }
+
+    // 获取最近一年的数据
+    fun getLastYearActivities(userId: Int): Flow<List<DailyActivity>> {
+        val startDate = LocalDate.now().minusYears(1).atStartOfDay()
+        return repository.getActivitiesFrom(startDate, userId)
+    }
+
+    // 计算每个月的平均步数
+    fun getMonthlyAverageSteps(lastYearActivities: List<DailyActivity>): List<Int> {
+        // 首先，按每个活动的月份进行分组
+        val activitiesByMonth = lastYearActivities.groupBy {
+            it.date.withDayOfMonth(1)  // 将日期转换为该月的第一天
+        }
+
+        // 然后，为每个月份计算平均步数
+        val monthlyAverages = activitiesByMonth.map { (month, activities) ->
+            // 计算这个月所有活动步数的总和
+            val totalSteps = activities.sumOf { it.steps ?: 0 }
+
+            // 如果这个月有活动记录，计算平均步数，否则为0
+            val averageSteps = if (activities.isNotEmpty()) totalSteps / activities.size else 0
+
+            // 返回计算得到的平均步数
+            averageSteps
+        }
+
+        return monthlyAverages
+    }
+
+
+    private val _dailyActivities = MutableStateFlow<List<DailyActivity>>(emptyList())
+    val dailyActivities: StateFlow<List<DailyActivity>> = _dailyActivities.asStateFlow()
+
+    fun loadDailyActivitiesOnce(userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val activities = repository.getAllActivitiesByUserIdN(userId)
+            _dailyActivities.value = activities
+        }
+    }
+
+    fun getDailyActivitiesByUserIdAndStore(userId: Int) {
+        viewModelScope.launch {
+            repository.getDailyActivitiesAndStore(userId)
+        }
     }
 }
 

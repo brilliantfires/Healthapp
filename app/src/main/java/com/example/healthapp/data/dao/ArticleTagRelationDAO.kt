@@ -28,6 +28,9 @@ interface ArticleTagRelationDAO {
     @Query("SELECT * FROM articleTagRelation")
     fun getAllArticleTagRelations(): Flow<List<ArticleTagRelation>>
 
+    @Query("SELECT * FROM articleTagRelation")
+    suspend fun getAllArticleTagRelationsN(): List<ArticleTagRelation>
+
     @Query(
         "" +
                 "SELECT * " +

@@ -13,8 +13,8 @@ import java.time.LocalDateTime
 @Dao
 interface NutritionRecordDAO {
     // 插入一条新的营养记录
-    @Insert
-    fun insertNutritionRecord(nutritionRecord: NutritionRecord)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertNutritionRecord(nutritionRecord: NutritionRecord)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(nutritionRecords: List<NutritionRecord>)
@@ -22,6 +22,9 @@ interface NutritionRecordDAO {
     // 根据用户ID查询该用户的所有营养记录
     @Query("SELECT * FROM nutritionRecord WHERE userID = :userID")
     fun getNutritionRecordsByUserId(userID: Int): Flow<List<NutritionRecord>>
+
+    @Query("SELECT * FROM nutritionRecord WHERE userID = :userID")
+    suspend fun getNutritionRecordsByUserIdN(userID: Int): List<NutritionRecord>
 
     // 更新已有的营养记录
     @Update
@@ -42,4 +45,13 @@ interface NutritionRecordDAO {
     // 查询特定用户和餐饮类型的营养记录
     @Query("SELECT * FROM nutritionRecord WHERE userID = :userID AND mealType = :mealType")
     fun getNutritionRecordsByMealType(userID: Int, mealType: String): Flow<List<NutritionRecord>>
+
+    @Query("SELECT * FROM nutritionRecord WHERE userID = :userID AND date = :date")
+    suspend fun getNutritionRecordByUserIdAndDate(
+        userID: Int,
+        date: LocalDateTime
+    ): NutritionRecord?
+
+    @Query("SELECT * FROM nutritionRecord")
+    suspend fun getAllNutritionRecords(): List<NutritionRecord>
 }

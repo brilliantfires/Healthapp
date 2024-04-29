@@ -4,6 +4,7 @@ import com.example.healthapp.data.dao.ArticleTagRelationDAO
 import com.example.healthapp.data.entity.Article
 import com.example.healthapp.data.entity.ArticleTag
 import com.example.healthapp.data.entity.ArticleTagRelation
+import com.example.healthapp.data.mysql.RetrofitClient
 import kotlinx.coroutines.flow.Flow
 
 class ArticleTagRelationRepository(private val articleTagRelationDAO: ArticleTagRelationDAO) {
@@ -12,6 +13,9 @@ class ArticleTagRelationRepository(private val articleTagRelationDAO: ArticleTag
 
     fun getAllArticleTagRelations(): Flow<List<ArticleTagRelation>> =
         articleTagRelationDAO.getAllArticleTagRelations()
+
+    suspend fun getAllArticleTagRelationsN(): List<ArticleTagRelation> =
+        articleTagRelationDAO.getAllArticleTagRelationsN()
 
     suspend fun updateArticleTagRelation(articleTagRelation: ArticleTagRelation) {
         articleTagRelationDAO.updateArticleTagRelation(articleTagRelation)
@@ -39,5 +43,15 @@ class ArticleTagRelationRepository(private val articleTagRelationDAO: ArticleTag
 
     suspend fun getTagRelationByTagId(tagId: Int): List<ArticleTagRelation> {
         return articleTagRelationDAO.getTagRelationByTagId(tagId)
+    }
+
+    // 从网络获取作者并存储到数据库
+    suspend fun getAllTagRelationsAndStore() {
+        val response = RetrofitClient.apiService.getAllArticleTagRelations()
+        if (response.isSuccessful) {
+            response.body()?.let { articleTagRelations ->
+                articleTagRelationDAO.insertAll(articleTagRelations)
+            }
+        }
     }
 }

@@ -5,9 +5,11 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class LocalDateTimeConverter {
+
     @TypeConverter
     fun fromLocalDateTime(value: LocalDateTime?): String? {
-        return value?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        val formatter =
+            return value?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     }
 
     @TypeConverter

@@ -1,5 +1,6 @@
 package com.example.healthapp.ui.ScreenLevel3
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +48,7 @@ import androidx.navigation.NavHostController
 import com.example.healthapp.R
 import com.example.healthapp.data.viewmodel.DailyActivityViewModel
 import com.example.healthapp.ui.ToolClass.CustomDateInput
+import com.example.healthapp.ui.ToolClass.formatTime
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -91,14 +94,14 @@ fun ExerciseDurationDetailsScreen(
                             Icon(
                                 imageVector = Icons.Filled.ArrowBackIos,
                                 contentDescription = stringResource(id = R.string.back_text),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue
                             )
                             Text(
                                 text = stringResource(id = R.string.back_text),
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = Color.Blue
                                 )
                             )
                         }
@@ -109,7 +112,11 @@ fun ExerciseDurationDetailsScreen(
                         onClick = { showDialog = true },
                         modifier = Modifier.width(80.dp)
                     ) {
-                        Icon(Icons.Filled.Edit, contentDescription = "编辑")
+                        Icon(
+                            Icons.Filled.Edit,
+                            contentDescription = "编辑",
+                            tint = Color.Blue
+                        )
                     }
                 }
             )
@@ -255,12 +262,13 @@ fun ExerciseDurationRow(exerciseDuration: String, date: String) {
     ) {
         Row(
             modifier = Modifier
+                .background(color = Color.White)
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = exerciseDuration,
+                text = formatTime(exerciseDuration),
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Start

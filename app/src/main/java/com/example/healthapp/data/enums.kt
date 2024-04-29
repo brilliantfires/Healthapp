@@ -27,3 +27,20 @@ enum class Category {
 //enum class MyColor {
 //    Red, Green, Blue, Magenta, Yellow, Cyan, Orange, Purple, Pink, Teal, Brown, Gray, Black, White
 //}
+
+enum class AdminSection(val displayName: String) {
+    USERS("Users"),
+    ARTICLES("Articles"),
+    AUTHORS("Authors"),
+    DISPLAY_CARDS("Display Cards");
+
+    // 可以在这里添加方法或扩展属性，例如获取对应视图的标题或描述等
+    fun getTitle(): String {
+        return when (this) {
+            ARTICLES -> "文章列表"
+            AUTHORS -> "作者列表"
+            DISPLAY_CARDS -> "展示卡片"
+            USERS -> "用户列表"
+        }
+    }
+}

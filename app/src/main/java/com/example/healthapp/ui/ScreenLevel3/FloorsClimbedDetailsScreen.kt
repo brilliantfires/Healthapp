@@ -1,5 +1,6 @@
 package com.example.healthapp.ui.ScreenLevel3
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -89,14 +91,14 @@ fun FloorsClimbedDetailsScreen(
                             Icon(
                                 imageVector = Icons.Filled.ArrowBackIos,
                                 contentDescription = stringResource(id = R.string.back_text),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue
                             )
                             Text(
                                 text = stringResource(id = R.string.back_text),
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = Color.Blue
                                 )
                             )
                         }
@@ -107,7 +109,11 @@ fun FloorsClimbedDetailsScreen(
                         onClick = { showDialog = true },
                         modifier = Modifier.width(80.dp)
                     ) {
-                        Icon(Icons.Filled.Edit, contentDescription = "编辑")
+                        Icon(
+                            Icons.Filled.Edit,
+                            contentDescription = "编辑",
+                            tint = Color.Blue
+                        )
                     }
                 }
             )
@@ -206,6 +212,7 @@ fun FloorsClimbedRow(floorsClimbed: Int, date: String) {
     ) {
         Row(
             modifier = Modifier
+                .background(color = Color.White)
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically

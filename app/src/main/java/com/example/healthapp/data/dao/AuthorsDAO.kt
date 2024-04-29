@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AuthorsDAO {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAuthor(author: Author)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,4 +28,8 @@ interface AuthorsDAO {
 
     @Query("SELECT * FROM authors")
     fun getAllAuthors(): Flow<List<Author>>
+
+
+    @Query("SELECT * FROM authors")
+    suspend fun getAllAuthorsN(): List<Author>
 }

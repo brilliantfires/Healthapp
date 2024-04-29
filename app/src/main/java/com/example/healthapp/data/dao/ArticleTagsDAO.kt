@@ -26,6 +26,9 @@ interface ArticleTagsDAO {
     @Query("SELECT * FROM articleTags")
     fun getAllTags(): Flow<List<ArticleTag>>
 
+    @Query("SELECT * FROM articleTags")
+    suspend fun getAllTagsN(): List<ArticleTag>
+
     // 通过tagID来找Tag
     @Query("SELECT * FROM articleTags WHERE tagID =:tagId")
     fun getTagById(tagId: Int): Flow<ArticleTag>

@@ -25,4 +25,10 @@ interface ArticleMediaDAO {
 
     @Query("SELECT * FROM articleMedia WHERE articleID = :articleID")
     fun getMediaByArticleId(articleID: Int): Flow<ArticleMedia>
+
+    @Query("SELECT * FROM articleMedia")
+    fun allArticleMedia(): Flow<List<ArticleMedia>>
+
+    @Query("SELECT * FROM articleMedia")
+    suspend fun allArticleMediaN(): List<ArticleMedia>
 }

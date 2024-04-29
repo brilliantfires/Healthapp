@@ -13,6 +13,9 @@ android {
     kotlin {
         jvmToolchain(8)
     }
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.healthapp"
@@ -29,7 +32,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+//            minifyEnabled = true  // 启用混淆
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -110,13 +114,28 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     // 添加连接mysql的依赖
-    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("mysql:mysql-connector-java:8.0.31")
 
+    //// 使用Retrofit库，使用网络请求，来实现数据的传输
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+//    implementation("com.google.gson:gson:2.8.9")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
+
+    // 添加JDBC的依赖，不要使用！！Android中不支持使用spring框架
+    //implementation("org.springframework:spring-context:5.3.23")
+    //implementation("org.springframework:spring-jdbc:5.3.23")
+
+    // 使用连接池来管理数据库的连接，提高性能
+    implementation("com.zaxxer:HikariCP:5.0.1")
     //用图标替换按钮的拓展依赖
     implementation("androidx.compose.material:material-icons-extended")
 
     //为了可以使 UI 元素可以延伸到屏幕的边缘，包括状态栏和导航栏下方，从而提供更加沉浸式的用户体验
     implementation("androidx.activity:activity-ktx:1.9.0-rc01")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     /*
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
@@ -132,6 +151,8 @@ dependencies {
     // 使用AAChartCore-Kotlin来绘制图表
     implementation("com.github.AAChartModel:AAChartCore-Kotlin:7.2.1")
 
-    // 测试的绘图包
-    // implementation("com.github.tehras:charts")
+    // 使用高级材质包
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
+    implementation("com.google.accompanist:accompanist-insets-ui:0.34.0")
+
 }
